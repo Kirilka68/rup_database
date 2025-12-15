@@ -6,27 +6,31 @@ import (
 )
 
 type Object struct {
-	ID                 string    `json:"id"`
-	Title              *string   `json:"title,omitempty"`
-	Year               *string   `json:"year,omitempty"`
-	Type               *string   `json:"type,omitempty"`
-	Course             *string   `json:"course,omitempty"`
-	StudyForm          *string   `json:"studyForm,omitempty"`
-	ExplorationNote    *string   `json:"explorationNote,omitempty"`
-	Goals              *string   `json:"goals,omitempty"`
-	Prerequisites      *string   `json:"prerequisites,omitempty"`
-	Postrequisites     *string   `json:"postrequisites,omitempty"`
-	GroupID            *string   `json:"groupId,omitempty"`
-	Contacts           *string   `json:"contacts,omitempty"`
-	InternetResources  *string   `json:"internetResources,omitempty"`
-	TechnicalResources *string   `json:"technicalResources,omitempty"`
-	RupType            *string   `json:"rupType,omitempty"`
-	Disciplines        *string   `json:"disciplines,omitempty"`
-	CreatedAt          time.Time `json:"created_at"`
-	UpdatedAt          time.Time `json:"updated_at"`
+	ID                 string      `json:"id"`
+	Title              interface{} `json:"title,omitempty"`
+	Year               interface{} `json:"year,omitempty"`
+	Type               interface{} `json:"type,omitempty"`
+	Course             interface{} `json:"course,omitempty"`
+	StudyForm          interface{} `json:"studyForm,omitempty"`
+	ExplorationNote    interface{} `json:"explorationNote,omitempty"`
+	Goals              interface{} `json:"goals,omitempty"`
+	Prerequisites      interface{} `json:"prerequisites,omitempty"`
+	Postrequisites     interface{} `json:"postrequisites,omitempty"`
+	GroupID            interface{} `json:"groupId,omitempty"`
+	Contacts           interface{} `json:"contacts,omitempty"`
+	InternetResources  interface{} `json:"internetResources,omitempty"`
+	TechnicalResources interface{} `json:"technicalResources,omitempty"`
+	RupType            interface{} `json:"rupType,omitempty"`
+	Disciplines        interface{} `json:"disciplines,omitempty"`
+	CreatedAt          time.Time   `json:"created_at"`
+	UpdatedAt          time.Time   `json:"updated_at"`
 }
 
 type CreateObjectDTO struct {
+	Data json.RawMessage `json:"data"`
+}
+
+type InnerCreateObjectDTO struct {
 	Title              json.RawMessage `json:"title"`
 	Year               json.RawMessage `json:"year"`
 	Type               json.RawMessage `json:"type"`
@@ -45,6 +49,11 @@ type CreateObjectDTO struct {
 }
 
 type UpdateObjectDTO struct {
+	Data json.RawMessage `json:"data"`
+	ID   json.RawMessage `json:"id"`
+}
+
+type InnerUpdateObjectDTO struct {
 	ID                 json.RawMessage `json:"id"`
 	Title              json.RawMessage `json:"title"`
 	Year               json.RawMessage `json:"year"`

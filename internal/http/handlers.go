@@ -16,13 +16,19 @@ func NewHandler(repo *repository.ObjectRepo) *Handler {
 }
 
 func (h *Handler) CreateObject(w http.ResponseWriter, r *http.Request) {
-	var dto models.CreateObjectDTO
-	if err := json.NewDecoder(r.Body).Decode(&dto); err != nil {
+	var wrapper models.CreateObjectDTO
+	if err := json.NewDecoder(r.Body).Decode(&wrapper); err != nil {
 		http.Error(w, err.Error(), 400)
 		return
 	}
 
-	obj, err := h.repo.Create(r.Context(), dto)
+	var inner models.InnerCreateObjectDTO
+	if err := json.Unmarshal(wrapper.Data, &inner); err != nil {
+		http.Error(w, err.Error(), 400)
+		return
+	}
+
+	obj, err := h.repo.Create(r.Context(), inner)
 	if err != nil {
 		http.Error(w, err.Error(), 500)
 		return
@@ -32,13 +38,13 @@ func (h *Handler) CreateObject(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handler) GetObject(w http.ResponseWriter, r *http.Request) {
-	var dto models.GetObjectDTO
-	if err := json.NewDecoder(r.Body).Decode(&dto); err != nil {
-		http.Error(w, err.Error(), 400)
+	id := r.URL.Query().Get("id")
+	if id == "" {
+		http.Error(w, "id required", 400)
 		return
 	}
 
-	obj, err := h.repo.GetByID(r.Context(), dto.ID)
+	obj, err := h.repo.GetByID(r.Context(), id)
 	if err != nil {
 		http.Error(w, err.Error(), 404)
 		return
@@ -48,13 +54,20 @@ func (h *Handler) GetObject(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handler) UpdateObject(w http.ResponseWriter, r *http.Request) {
-	var dto models.UpdateObjectDTO
-	if err := json.NewDecoder(r.Body).Decode(&dto); err != nil {
+	var wrapper models.UpdateObjectDTO
+	if err := json.NewDecoder(r.Body).Decode(&wrapper); err != nil {
 		http.Error(w, err.Error(), 400)
 		return
 	}
 
-	obj, err := h.repo.Update(r.Context(), dto)
+	var inner models.InnerUpdateObjectDTO
+	if err := json.Unmarshal(wrapper.Data, &inner); err != nil {
+		http.Error(w, err.Error(), 400)
+		return
+	}
+	inner.ID = wrapper.ID
+
+	obj, err := h.repo.Update(r.Context(), inner)
 	if err != nil {
 		http.Error(w, err.Error(), 500)
 		return
@@ -64,13 +77,13 @@ func (h *Handler) UpdateObject(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handler) DeleteObject(w http.ResponseWriter, r *http.Request) {
-	var dto models.DeleteObjectDTO
-	if err := json.NewDecoder(r.Body).Decode(&dto); err != nil {
-		http.Error(w, err.Error(), 400)
+	id := r.URL.Query().Get("id")
+	if id == "" {
+		http.Error(w, "id required", 400)
 		return
 	}
 
-	err := h.repo.Delete(r.Context(), dto.ID)
+	err := h.repo.Delete(r.Context(), id)
 	if err != nil {
 		http.Error(w, err.Error(), 500)
 		return

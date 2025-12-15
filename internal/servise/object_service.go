@@ -2,6 +2,7 @@ package services
 
 import (
 	"context"
+	"encoding/json"
 	"rup_database/internal/models"
 	"rup_database/internal/repository"
 )
@@ -15,7 +16,11 @@ func NewObjectService(repo repository.ObjectRepository) *ObjectService {
 }
 
 func (s *ObjectService) Create(ctx context.Context, input models.CreateObjectDTO) (*models.Object, error) {
-	return s.repo.Create(ctx, input)
+	var inner models.InnerCreateObjectDTO
+	if err := json.Unmarshal(input.Data, &inner); err != nil {
+		return nil, err
+	}
+	return s.repo.Create(ctx, inner)
 }
 
 func (s *ObjectService) GetByID(ctx context.Context, id string) (*models.Object, error) {
@@ -27,7 +32,12 @@ func (s *ObjectService) List(ctx context.Context) ([]*models.Object, error) {
 }
 
 func (s *ObjectService) Update(ctx context.Context, input models.UpdateObjectDTO) (*models.Object, error) {
-	return s.repo.Update(ctx, input)
+	var inner models.InnerUpdateObjectDTO
+	if err := json.Unmarshal(input.Data, &inner); err != nil {
+		return nil, err
+	}
+	inner.ID = input.ID
+	return s.repo.Update(ctx, inner)
 }
 
 func (s *ObjectService) Delete(ctx context.Context, id string) error {
