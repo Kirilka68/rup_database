@@ -1,0 +1,14 @@
+type: workspace
+model: workspace
+id: wk_qeoyLUjqJj
+createdAt: 2025-12-25T14:09:08.384850
+updatedAt: 2025-12-25T14:09:08.384850500
+authentication: {}
+authenticationType: null
+description: ''
+headers: []
+name: rup_database
+encryptionKeyChallenge: null
+settingValidateCertificates: true
+settingFollowRedirects: true
+settingRequestTimeout: 0
